@@ -24,6 +24,8 @@ jobs:
     env:
       RAILS_ENV: development
       DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/blog_dev
+      # Webpack 4 (webpacker 5) on Node 18+ needs legacy OpenSSL; @playwright/test requires Node >= 18.
+      NODE_OPTIONS: --openssl-legacy-provider
 
     steps:
       - uses: actions/checkout@v4
@@ -38,8 +40,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # Webpack 4 (webpacker 5) is reliable on Node 16; Node 18+ often needs OpenSSL legacy flags.
-          node-version: "16"
+          node-version: "20"
           cache: yarn
 
       - name: Install JavaScript dependencies
