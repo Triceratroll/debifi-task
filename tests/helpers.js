@@ -72,7 +72,7 @@ async function deleteAllMyPosts(page) {
  */
 async function cancelAccount(page) {
   await page.goto(`${BASE_URL}/users/edit`);
-  await page.locator('button', { hasText: 'Cancel my account' }).click();
+  await page.locator('input', { hasText: 'Cancel my account' }).click();
   // Devise sends a DELETE /users and redirects to root. waitForLoadState is
   // more reliable than waitForURL here because the destination URL (/) is the
   // same one we may already be navigating through during the redirect chain.
