@@ -10,13 +10,15 @@ module.exports = defineConfig({
   reporter: [['html', { outputFolder: 'tests/playwright-report', open: 'never' }], ['list']],
   use: {
     baseURL: 'http://localhost:3000',
-    headless: false,
+    // Default headless (CI-friendly, faster). Use: npx playwright test --headed
+    headless: true,
     trace: 'on-first-retry',
     screenshot: 'on',
     video: 'off',
-    launchOptions: {
-      slowMo: 300,
-    },
+    // Optional: SLOW_MO=300 npx playwright test --headed
+    launchOptions: process.env.SLOW_MO
+      ? { slowMo: Number(process.env.SLOW_MO) || 300 }
+      : {},
   },
   projects: [
     {
