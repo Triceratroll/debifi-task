@@ -23,7 +23,13 @@
  */
 
 const { test, expect } = require('@playwright/test');
-const { uniqueEmail, signUp, createPost, BASE_URL } = require('./helpers');
+const { uniqueEmail, signUp, createPost, cleanupTestUser, BASE_URL } = require('./helpers');
+
+// Runs after every test (pass or fail) – removes all posts and the user account.
+test.afterEach(async ({ page }, testInfo) => {
+  testInfo.setTimeout(testInfo.timeout + 30_000);
+  await cleanupTestUser(page);
+});
 
 // ── Payloads ─────────────────────────────────────────────────────────────────
 
