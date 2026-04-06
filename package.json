@@ -1,6 +1,13 @@
 {
   "name": "blog-with-bugs",
   "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:tc71": "playwright test tc7.1-edit-post",
+    "test:tc69": "playwright test tc6.9-xss",
+    "test:visual": "playwright test tc-visual-plans",
+    "test:report": "playwright show-report tests/playwright-report"
+  },
   "dependencies": {
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
@@ -12,6 +19,10 @@
   },
   "version": "0.1.0",
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "jimp": "^0.22.12",
+    "pixelmatch": "^5.3.0",
+    "pngjs": "^7.0.0",
     "webpack-dev-server": "^3"
   }
 }
