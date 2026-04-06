@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/blog_dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client (for pg gem)
+        run: sudo apt-get update && sudo apt-get install -y libpq-dev
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7"
+          bundler-cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          # Webpack 4 (webpacker 5) is reliable on Node 16; Node 18+ often needs OpenSSL legacy flags.
+          node-version: "16"
+          cache: yarn
+
+      - name: Install JavaScript dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Prepare database
+        run: bundle exec rails db:prepare
+
+      - name: Compile Webpacker assets
+        run: bundle exec rails webpacker:compile
+
+      - name: Start Rails and wait until ready
+        run: |
+          bundle exec rails server -p 3000 -b 127.0.0.1 &
+          timeout 120 bash -c 'until curl -sf http://127.0.0.1:3000/users/sign_up >/dev/null; do sleep 2; done'
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright — TC 7.1, TC 6.9, visual /plans
+        run: npx playwright test tc7.1-edit-post tc6.9-xss tc-visual-plans
