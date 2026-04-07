@@ -14,7 +14,13 @@ The three tests in this repository are:
 
 The tests live in the `tests/` folder and use [Playwright](https://playwright.dev/). They are written to **fail** cause the buggy behaviour is still present. The visual test compares against a reference screenshot in this case the reference image is almost identical and the test is designed to pass but it still show the capabilities to control the changes done to the frontend that may brake the baseline design.
 
+Example diff heatmap from the plans page visual test (highlights pixel differences, e.g. in the header):
+
+![Plans page visual diff heatmap](tests/snapshots/plans-diff-heatmap.png)
+
 Each test creates the data it needs and cleans up afterward so the environment stays tidy.
+
+AI tools have been used to, develop test and design the assigment, especially Playwright MCP server
 
 ## CI
 
